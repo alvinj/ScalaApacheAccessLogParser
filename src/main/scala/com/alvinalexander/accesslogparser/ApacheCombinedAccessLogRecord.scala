@@ -37,7 +37,7 @@ object ApacheCombinedAccessLogParser {
     val regex = s"$ip $client $user $dateTime $request $status $bytes $referer $agent"
     val p = Pattern.compile(regex)
     
-    // note: group(0) is the entire record that was matched
+    // note: group(0) is the entire record that was matched (skip it)
     def parse(record: String): Option[ApacheCombinedAccessLogRecord] = {
         val matcher = p.matcher(record)
         if (matcher.find) {

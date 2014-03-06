@@ -45,24 +45,31 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
           And("user agent")
               assert(rec.get.userAgent == "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11 GTB5")  
       }
-//      it("those fields should not be null") {
-//          rec.foreach { r =>
-//              assert(r.clientIpAddress == "124.30.9.161")
-//              assert(r.rfc1413ClientIdentity == "-")
-//              assert(r.remoteUser == "-")
-//              assert(r.dateTime == "[21/Jul/2009:02:48:11 -0700]")
-//              assert(r.request == "GET /java/edu/pj/pj010004/pj010004.shtml HTTP/1.1")
-//              assert(r.serverStatusCode == "200")
-//              assert(r.bytesSent == "16731")
-//              assert(r.referer == "http://www.google.co.in/search?hl=en&client=firefox-a&rlz=1R1GGGL_en___IN337&hs=F0W&q=reading+data+from+file+in+java&btnG=Search&meta=&aq=0&oq=reading+data+")
-//              assert(r.userAgent == "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11 GTB5")
-//          }
-//          println(rec.get)
-//      }
+  }
+  
+  describe("The second record") {
+      records = SampleCombinedAccessLogRecords.data
+      val rec = ApacheCombinedAccessLogParser.parse(records(1))
+      it("the result should not be None") {
+          assert(rec != None)
+      }
+      it("the individual fields should be right") {
+          rec.foreach { r =>
+              assert(r.clientIpAddress == "89.166.165.223")
+              assert(r.rfc1413ClientIdentity == "-")
+              assert(r.remoteUser == "-")
+              assert(r.dateTime == "[21/Jul/2009:02:48:12 -0700]")
+              assert(r.request == "GET /favicon.ico HTTP/1.1")
+              assert(r.serverStatusCode == "404")
+              assert(r.bytesSent == "970")
+              assert(r.referer == "-")
+              assert(r.userAgent == "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11")
+          }
+      }
   }
 
 }
 
 
-// 124.30.9.161 - - [21/Jul/2009:02:48:11 -0700] "GET /java/edu/pj/pj010004/pj010004.shtml HTTP/1.1" 200 16731 "http://www.google.co.in/search?hl=en&client=firefox-a&rlz=1R1GGGL_en___IN337&hs=F0W&q=reading+data+from+file+in+java&btnG=Search&meta=&aq=0&oq=reading+data+" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11 GTB5"
+
 

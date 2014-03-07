@@ -18,7 +18,7 @@ The API is in flux, but right now the usage starts like this:
     val rawRecord = """89.166.165.223 - - [21/Jul/2009:02:48:12 -0700] "GET /foo HTTP/1.1" 404 970 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.11) Firefox/3.0.11""""
     
     val parser = ApacheCombinedAccessLogParser
-    val accessLogRecord = parser.parse(rawRecord)    // a ApacheCombinedAccessLogRecord instance
+    val accessLogRecord = parser.parse(rawRecord)    // an ApacheCombinedAccessLogRecord instance
 
 The `ApacheCombinedAccessLogRecord` class definition looks like this:
 

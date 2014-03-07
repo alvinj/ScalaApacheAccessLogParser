@@ -1,13 +1,13 @@
 # A Scala Apache Access Log Parser
 
-This project can be used to parse Apache access log records
-(combined records, to be specific) in JVM applications (Scala,
-Java, etc.)
+This project can be used to parse Apache access log records in JVM applications (Scala,
+Java, etc.) It is specifically written to work with "combined records", as that's
+the only access log format I've used since the 1990s.
 
 
 ## Discussion
 
-I needed an Apache logfile parser, and after looking at some other
+In short, I needed an Apache access log parser, and after looking at some other
 code, I decided to write my own.
 
 
@@ -32,6 +32,7 @@ This project is a typical SBT project, so just use commands like this:
 
     sbt compile
     sbt test
+    sbt package
 
 
 ## More information

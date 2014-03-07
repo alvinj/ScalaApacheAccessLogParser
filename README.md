@@ -21,8 +21,9 @@ The API is in flux, but right now the usage starts like this:
     val parser = ApacheCombinedAccessLogParser
     val accessLogRecord = parser.parse(rawRecord)
 
-I just added some methods to parse the `date` and `request` fields. You can see all of the
-current, up-to-date API by looking at the tests in the ApacheCombinedAccessLogRecordSpec class.
+I just added some methods to parse the `date` and `request` fields, and I'll document those
+here on another day. You can see all of the current, up-to-date API by looking at the tests 
+in the `ApacheCombinedAccessLogRecordSpec` class.
 
 
 ## Building

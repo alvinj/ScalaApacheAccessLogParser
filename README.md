@@ -36,7 +36,7 @@ This project is a typical SBT project, so just use commands like this:
 
 ## More information
 
-For more information, see my website:
+For more information about yours truly, see my website:
 
 Alvin Alexander  
 http://alvinalexander.com

@@ -15,11 +15,12 @@ code, I decided to write my own.
 
 The API is in flux, but right now the usage starts like this:
 
+    
     val rawRecord = """89.166.165.223 - - [21/Jul/2009:02:48:12 -0700] "GET /foo HTTP/1.1" 404 970 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.11) Firefox/3.0.11""""
     
-    // a `ApacheCombinedAccessLogRecord` object
     val parser = ApacheCombinedAccessLogParser
     val accessLogRecord = parser.parse(rawRecord)
+    
 
 I just added some methods to parse the `date` and `request` fields, and I'll document those
 here on another day. You can see all of the current, up-to-date API by looking at the tests 

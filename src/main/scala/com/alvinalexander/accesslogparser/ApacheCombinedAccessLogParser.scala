@@ -14,20 +14,22 @@ import scala.util.control.Exception._  // allCatch
  * I don't know that this is necessary, but I think it is for this use case.
  * 
  */
-class ApacheCombinedAccessLogParser {
 
-    val ddd = "\\d{1,3}"                      // at least 1 but not more than 3 times (possessive)
-    val ip = s"($ddd\\.$ddd\\.$ddd\\.$ddd)?"  // like `123.456.7.89`
-    val client = "(\\S+)"                     // '\S' is 'non-whitespace character'
-    val user = "(\\S+)"
-    val dateTime = "(\\[.+?\\])"              // like `[21/Jul/2009:02:48:13 -0700]`
-    val request = "\"(.*?)\""                 // any number of any character, reluctant
-    val status = "(\\d{3})"
-    val bytes = "(\\d+)"
-    val referer = "\"(.*?)\""
-    val agent = "\"(.*?)\""
-    val regex = s"$ip $client $user $dateTime $request $status $bytes $referer $agent"
-    val p = Pattern.compile(regex)
+@SerialVersionUID(100L)
+class ApacheCombinedAccessLogParser extends Serializable {
+
+    private val ddd = "\\d{1,3}"                      // at least 1 but not more than 3 times (possessive)
+    private val ip = s"($ddd\\.$ddd\\.$ddd\\.$ddd)?"  // like `123.456.7.89`
+    private val client = "(\\S+)"                     // '\S' is 'non-whitespace character'
+    private val user = "(\\S+)"
+    private val dateTime = "(\\[.+?\\])"              // like `[21/Jul/2009:02:48:13 -0700]`
+    private val request = "\"(.*?)\""                 // any number of any character, reluctant
+    private val status = "(\\d{3})"
+    private val bytes = "(\\d+)"
+    private val referer = "\"(.*?)\""
+    private val agent = "\"(.*?)\""
+    private val regex = s"$ip $client $user $dateTime $request $status $bytes $referer $agent"
+    private val p = Pattern.compile(regex)
     
     // note: group(0) is the entire record that was matched (skip it)
     def parseRecord(record: String): Option[ApacheCombinedAccessLogRecord] = {

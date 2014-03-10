@@ -17,18 +17,18 @@ The API is in flux, but right now the usage starts like this:
 
     val rawRecord = """89.166.165.223 - - [21/Jul/2009:02:48:12 -0700] "GET /foo HTTP/1.1" 404 970 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.11) Firefox/3.0.11""""
     
-    val parser = ApacheCombinedAccessLogParser
-    val accessLogRecord = parser.parse(rawRecord)    // an ApacheCombinedAccessLogRecord instance
+    val parser = AccessLogParser
+    val accessLogRecord = parser.parse(rawRecord)    // an AccessLogRecord instance
 
-The `ApacheCombinedAccessLogRecord` class definition looks like this:
+The `AccessLogRecord` class definition looks like this:
 
-    case class ApacheCombinedAccessLogRecord (
+    case class AccessLogRecord (
         clientIpAddress: String,         // should be an ip address, but may also be the hostname if hostname-lookups are enabled
         rfc1413ClientIdentity: String,   // typically '-'
         remoteUser: String,              // typically '-'
         dateTime: String,                // [day/month/year:hour:minute:second zone]
         request: String,                 // 'GET /foo ...'
-        serverStatusCode: String,        // 200, 404, etc.
+        httpStatusCode: String,          // 200, 404, etc.
         bytesSent: String,               // may be '-'
         referer: String,                 // where the visitor came from
         userAgent: String                // long string to represent the browser and OS
@@ -36,7 +36,7 @@ The `ApacheCombinedAccessLogRecord` class definition looks like this:
 
 I just added some methods to parse the `date` and `request` fields, and I'll document those
 here on another day. You can see all of the current, up-to-date API by looking at the tests 
-in the `ApacheCombinedAccessLogRecordSpec` class.
+in the `AccessLogRecordSpec` class.
 
 
 ## Building

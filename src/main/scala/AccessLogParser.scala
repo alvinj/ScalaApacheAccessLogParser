@@ -16,7 +16,7 @@ import scala.util.control.Exception._  // allCatch
  */
 
 @SerialVersionUID(100L)
-class ApacheCombinedAccessLogParser extends Serializable {
+class AccessLogParser extends Serializable {
 
     private val ddd = "\\d{1,3}"                      // at least 1 but not more than 3 times (possessive)
     private val ip = s"($ddd\\.$ddd\\.$ddd\\.$ddd)?"  // like `123.456.7.89`
@@ -32,10 +32,10 @@ class ApacheCombinedAccessLogParser extends Serializable {
     private val p = Pattern.compile(regex)
     
     // note: group(0) is the entire record that was matched (skip it)
-    def parseRecord(record: String): Option[ApacheCombinedAccessLogRecord] = {
+    def parseRecord(record: String): Option[AccessLogRecord] = {
         val matcher = p.matcher(record)
         if (matcher.find) {
-            Some(ApacheCombinedAccessLogRecord(
+            Some(AccessLogRecord(
                 matcher.group(1),
                 matcher.group(2),
                 matcher.group(3),
@@ -55,7 +55,7 @@ class ApacheCombinedAccessLogParser extends Serializable {
  * A sample record:
  * 94.102.63.11 - - [21/Jul/2009:02:48:13 -0700] "GET / HTTP/1.1" 200 18209 "http://acme.com/foo.php" "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
  */
-object ApacheCombinedAccessLogParser {
+object AccessLogParser {
 
     /**
      * @param A String like "GET /the-uri-here HTTP/1.1"
@@ -76,12 +76,12 @@ object ApacheCombinedAccessLogParser {
         val datePattern = Pattern.compile(dateRegex)
         val dateMatcher = datePattern.matcher(field)
         if (dateMatcher.find) {
-            val dateString = dateMatcher.group(1)
-            println("***** DATE STRING" + dateString)
-            // HH is 0-23; kk is 1-24
-            val dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss", Locale.ENGLISH)
-            allCatch.opt(dateFormat.parse(dateString))  // return Option[Date]
-        } else {
+                val dateString = dateMatcher.group(1)
+                println("***** DATE STRING" + dateString)
+                // HH is 0-23; kk is 1-24
+                val dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss", Locale.ENGLISH)
+                allCatch.opt(dateFormat.parse(dateString))  // return Option[Date]
+            } else {
             None
         }
     }

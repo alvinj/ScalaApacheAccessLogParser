@@ -17,7 +17,7 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
       it("the data fields should be correct") {
           Given("the first sample log record")
           records = SampleCombinedAccessLogRecords.data
-          val parser = new ApacheCombinedAccessLogParser
+          val parser = new AccessLogParser
           val rec = parser.parseRecord(records(0))
           println("IP ADDRESS: " + rec.get.clientIpAddress)
           Then("parsing record(0) should not return None")
@@ -45,7 +45,7 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
   
   describe("Testing a second access log record ...") {
       records = SampleCombinedAccessLogRecords.data
-      val parser = new ApacheCombinedAccessLogParser
+      val parser = new AccessLogParser
       val rec = parser.parseRecord(records(1))
       it("the result should not be None") {
           assert(rec != None)
@@ -68,7 +68,7 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
   describe("Parsing the request field ...") {
       it("a simple request should work") {
           val req = "GET /the-uri-here HTTP/1.1"
-          val result = ApacheCombinedAccessLogParser.parseRequestField(req)
+          val result = AccessLogParser.parseRequestField(req)
           assert(result != None)
           result.foreach { res =>
               val (requestType, uri, httpVersion) = res 
@@ -79,14 +79,14 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
       }
       it("an invalid request should return blanks") {
           val req = "foobar"
-          val result = ApacheCombinedAccessLogParser.parseRequestField(req)
+          val result = AccessLogParser.parseRequestField(req)
           assert(result == None)
       }
   }
   
   describe("Parsing the date field ...") {
       it("a valid date field should work") {
-          val date = ApacheCombinedAccessLogParser.parseDateField("[21/Jul/2009:02:48:13 -0700]")
+          val date = AccessLogParser.parseDateField("[21/Jul/2009:02:48:13 -0700]")
           assert(date != None)
           date.foreach { d =>
               val cal = Calendar.getInstance
@@ -100,7 +100,7 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
           }
       }
       it("an invalid date field should return None") {
-          val date = ApacheCombinedAccessLogParser.parseDateField("[foo bar]")
+          val date = AccessLogParser.parseDateField("[foo bar]")
           assert(date == None)
       }
   }

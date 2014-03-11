@@ -65,6 +65,67 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
       }
   }
   
+  describe("Trying to parse a record I used to fail on ...") {
+      records = SampleCombinedAccessLogRecords.badRecord
+      val parser = new AccessLogParser
+      val rec = parser.parseRecord(records(0))
+      it("the result should not be None") {
+          assert(rec != None)
+      }
+      it("the individual fields should be right") {
+          rec.foreach { r =>
+              assert(r.clientIpAddress == "66.249.70.10")
+              assert(r.rfc1413ClientIdentity == "-")
+              assert(r.remoteUser == "-")
+              assert(r.dateTime == "[23/Feb/2014:03:21:59 -0700]")
+              assert(r.request == "GET /blog/post/java/how-load-multiple-spring-context-files-standalone/ HTTP/1.0")
+              assert(r.httpStatusCode == "301")
+              assert(r.bytesSent == "-")
+              assert(r.referer == "-")
+              assert(r.userAgent == "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+          }
+      }
+  }
+  
+  describe("Testing the parseRecordReturningNullObjectOnFailure method with a valid record ...") {
+      records = SampleCombinedAccessLogRecords.data
+      val parser = new AccessLogParser
+      val rec = parser.parseRecordReturningNullObjectOnFailure(records(1))
+      it("the result should not be null") {
+          assert(rec != null)
+      }
+      it("the individual fields should be right") {
+          assert(rec.clientIpAddress == "89.166.165.223")
+          assert(rec.rfc1413ClientIdentity == "-")
+          assert(rec.remoteUser == "-")
+          assert(rec.dateTime == "[21/Jul/2009:02:48:12 -0700]")
+          assert(rec.request == "GET /favicon.ico HTTP/1.1")
+          assert(rec.httpStatusCode == "404")
+          assert(rec.bytesSent == "970")
+          assert(rec.referer == "-")
+          assert(rec.userAgent == "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11")
+      }
+  }
+  
+  describe("Testing the parseRecordReturningNullObjectOnFailure method with an invalid record ...") {
+      val parser = new AccessLogParser
+      val rec = parser.parseRecordReturningNullObjectOnFailure("foo bar baz")
+      it("the result should not be null") {
+          assert(rec != null)
+      }
+      it("the individual fields should be blank strings") {
+          assert(rec.clientIpAddress == "")
+          assert(rec.rfc1413ClientIdentity == "")
+          assert(rec.remoteUser == "")
+          assert(rec.dateTime == "")
+          assert(rec.request == "")
+          assert(rec.httpStatusCode == "")
+          assert(rec.bytesSent == "")
+          assert(rec.referer == "")
+          assert(rec.userAgent == "")
+      }
+  }
+  
   describe("Parsing the request field ...") {
       it("a simple request should work") {
           val req = "GET /the-uri-here HTTP/1.1"

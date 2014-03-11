@@ -3,7 +3,9 @@ package com.alvinalexander.accesslogparser
 import java.util.regex.Pattern
 import java.text.SimpleDateFormat
 import java.util.Locale
-import scala.util.control.Exception._  // allCatch
+import scala.util.control.Exception._
+import java.util.regex.Matcher
+import scala.util.{Try, Success, Failure}
 
 /**
  * A sample record:
@@ -25,29 +27,55 @@ class AccessLogParser extends Serializable {
     private val dateTime = "(\\[.+?\\])"              // like `[21/Jul/2009:02:48:13 -0700]`
     private val request = "\"(.*?)\""                 // any number of any character, reluctant
     private val status = "(\\d{3})"
-    private val bytes = "(\\d+)"
+    private val bytes = "(\\S+)"                      // this can be a "-"
     private val referer = "\"(.*?)\""
     private val agent = "\"(.*?)\""
     private val regex = s"$ip $client $user $dateTime $request $status $bytes $referer $agent"
     private val p = Pattern.compile(regex)
     
-    // note: group(0) is the entire record that was matched (skip it)
+    /**
+     * note: group(0) is the entire record that was matched (skip it)
+     * @param record Assumed to be an Apache access log combined record.
+     * @return An AccessLogRecord instance wrapped in an Option.
+     */
     def parseRecord(record: String): Option[AccessLogRecord] = {
         val matcher = p.matcher(record)
         if (matcher.find) {
-            Some(AccessLogRecord(
-                matcher.group(1),
-                matcher.group(2),
-                matcher.group(3),
-                matcher.group(4),
-                matcher.group(5),
-                matcher.group(6),
-                matcher.group(7),
-                matcher.group(8),
-                matcher.group(9)))
+            Some(buildAccessLogRecord(matcher))
         } else {
             None
         }
+    }
+
+    /**
+     * Same as parseRecord, but returns a "Null Object" version of an AccessLogRecord
+     * rather than an Option.
+     * 
+     * @param record Assumed to be an Apache access log combined record.
+     * @return An AccessLogRecord instance. This will be a "Null Object" version of an
+     * AccessLogRecord if the parsing process fails. All fields in the Null Object
+     * will be empty strings.
+     */
+    def parseRecordReturningNullObjectOnFailure(record: String): AccessLogRecord = {
+        val matcher = p.matcher(record)
+        if (matcher.find) {
+            buildAccessLogRecord(matcher)
+        } else {
+            AccessLogParser.nullObjectAccessLogRecord
+        }
+    }
+    
+    private def buildAccessLogRecord(matcher: Matcher) = {
+        AccessLogRecord(
+            matcher.group(1),
+            matcher.group(2),
+            matcher.group(3),
+            matcher.group(4),
+            matcher.group(5),
+            matcher.group(6),
+            matcher.group(7),
+            matcher.group(8),
+            matcher.group(9))
     }
 }
 
@@ -57,6 +85,8 @@ class AccessLogParser extends Serializable {
  */
 object AccessLogParser {
 
+    val nullObjectAccessLogRecord = AccessLogRecord("", "", "", "", "", "", "", "", "")
+    
     /**
      * @param A String like "GET /the-uri-here HTTP/1.1"
      * @return A Tuple3(requestType, uri, httpVersion). requestType is GET, POST, etc.

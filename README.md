@@ -34,14 +34,38 @@ The `AccessLogRecord` class definition looks like this:
         userAgent: String                // long string to represent the browser and OS
     )
 
-I just added some methods to parse the `date` and `request` fields, and I'll document those
+In the test code you'll see that I use the parser like this:
+
+    val parser = new AccessLogParser
+    val rec = parser.parseRecord(rawRecord)
+    it("the result should not be None") {
+        assert(rec != None)
+    }
+    it("the individual fields should be right") {
+        rec.foreach { r =>
+            assert(r.clientIpAddress == "66.249.70.10")
+            assert(r.rfc1413ClientIdentity == "-")
+            assert(r.remoteUser == "-")
+            assert(r.dateTime == "[23/Feb/2014:03:21:59 -0700]")
+            assert(r.request == "GET /blog/post/java/how-load-multiple-spring-context-files-standalone/ HTTP/1.0")
+            assert(r.httpStatusCode == "301")
+            assert(r.bytesSent == "-")
+            assert(r.referer == "-")
+            assert(r.userAgent == "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+        }
+    }
+
+If you don't like using the Option/Some/None pattern, I added a method named `parseRecordReturningNullObjectOnFailure`
+that returns a "Null Object" version of an `AccessLogRecord` instead of an Option.
+
+I also added some methods to parse the `date` and `request` fields, and I'll document those
 here on another day. You can see all of the current, up-to-date API by looking at the tests 
 in the `AccessLogRecordSpec` class.
 
 
 ## Building
 
-This project is a typical SBT project, so just use commands like this:
+This project is a typical Scala/SBT project, so just use commands like this:
 
     sbt compile
     sbt test

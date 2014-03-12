@@ -85,8 +85,12 @@ Apache Spark and Scala:
 * [Analyzing Apache access logs with Spark and Scala](http://alvinalexander.com/scala/analyzing-apache-access-logs-files-spark-scala)
 * [Generating a list of URLs from Apache access log files, sorted by hit count, using Apache Spark (and Scala)](http://alvinalexander.com/scala/analyzing-apache-access-logs-files-spark-scala-part-2)
 
-For more information about yours truly, see my website:
+For more information about yours truly:
 
+* [See my website](http://alvinalexander.com)
+* [Find me here on Twitter]([https://twitter.com/alvinalexander)
+
+All the best,    
 Alvin Alexander  
 http://alvinalexander.com
 

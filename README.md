@@ -74,9 +74,27 @@ This project is a typical Scala/SBT project, so just use commands like this:
 
 ## More information
 
+I've added more documentation about this library at the following URLs. First, the basic documentation
+on this library is at this URL:
+
+* [My Scala Apache access log parser library](http://alvinalexander.com/scala/scala-apache-access-log-parser-library-java-jvm)
+
+Next, I've written two articles on how to use this library to analyze Apache access log records with
+Apache Spark and Scala:
+
+* [Analyzing Apache access logs with Spark and Scala](http://alvinalexander.com/scala/analyzing-apache-access-logs-files-spark-scala)
+* [Generating a list of URLs from Apache access log files, sorted by hit count, using Apache Spark (and Scala)](http://alvinalexander.com/scala/analyzing-apache-access-logs-files-spark-scala-part-2)
+
 For more information about yours truly, see my website:
 
 Alvin Alexander  
 http://alvinalexander.com
+
+
+
+
+
+
+
 
 

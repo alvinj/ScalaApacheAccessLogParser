@@ -88,7 +88,7 @@ Apache Spark and Scala:
 For more information about yours truly:
 
 * [See my website](http://alvinalexander.com)
-* [Find me here on Twitter]([https://twitter.com/alvinalexander)
+* [Find me here on Twitter](https://twitter.com/alvinalexander)
 
 All the best,    
 Alvin Alexander  

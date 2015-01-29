@@ -4,6 +4,7 @@ package com.alvinalexander.accesslogparser
  * @see http://httpd.apache.org/docs/2.2/logs.html for details
  */
 case class AccessLogRecord (
+	botnet: String,                  // string or empty
     clientIpAddress: String,         // should be an ip address, but may also be the hostname if hostname-lookups are enabled
     rfc1413ClientIdentity: String,   // typically `-`
     remoteUser: String,              // typically `-`

@@ -17,9 +17,23 @@ import scala.util.{Try, Success, Failure}
  * 
  */
 
+ /**
+ * For record like:
+ * 94.102.63.11 - - [21/Jul/2009:02:48:13 -0700] "GET / HTTP/1.1" 200 18209 "http://acme.com/foo.php" "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"
+ * it will add '-' in the beginning of the log line. Botnet is '-'
+ *
+ *
+ * For records like:
+ * Expiro 5.102.63.11 - - [3/Jan/2014:10:06:55 +0000] "GET /?f=x HTTP/1.1" 200 3594 "http://www.foo.it/foo.php" "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET4.0C; .NET4.0E; InfoPath.2)"
+ * Botnet is 'Expiro'
+ */
+
+
+
 @SerialVersionUID(100L)
 class AccessLogParser extends Serializable {
 
+    private val bot = "(\\S+)"                        // like 'Expiro'
     private val ddd = "\\d{1,3}"                      // at least 1 but not more than 3 times (possessive)
     private val ip = s"($ddd\\.$ddd\\.$ddd\\.$ddd)?"  // like `123.456.7.89`
     private val client = "(\\S+)"                     // '\S' is 'non-whitespace character'
@@ -30,7 +44,7 @@ class AccessLogParser extends Serializable {
     private val bytes = "(\\S+)"                      // this can be a "-"
     private val referer = "\"(.*?)\""
     private val agent = "\"(.*?)\""
-    private val regex = s"$ip $client $user $dateTime $request $status $bytes $referer $agent"
+    private val regex = s"$bot $ip $client $user $dateTime $request $status $bytes $referer $agent"
     private val p = Pattern.compile(regex)
     
     /**
@@ -39,7 +53,10 @@ class AccessLogParser extends Serializable {
      * @return An AccessLogRecord instance wrapped in an Option.
      */
     def parseRecord(record: String): Option[AccessLogRecord] = {
-        val matcher = p.matcher(record)
+        val isbot = "(\\D+)".r
+        val check_record = isbot findFirstIn record
+        val matcher = if(check_record == Some(".")) p.matcher("- " + record)
+                               else  p.matcher(record)
         if (matcher.find) {
             Some(buildAccessLogRecord(matcher))
         } else {
@@ -57,7 +74,10 @@ class AccessLogParser extends Serializable {
      * will be empty strings.
      */
     def parseRecordReturningNullObjectOnFailure(record: String): AccessLogRecord = {
-        val matcher = p.matcher(record)
+        val isbot = "(\\D+)".r
+        val check_record = isbot findFirstIn record
+        val matcher = if(check_record == Some(".")) p.matcher("- " + record)
+                               else  p.matcher(record)
         if (matcher.find) {
             buildAccessLogRecord(matcher)
         } else {
@@ -75,7 +95,8 @@ class AccessLogParser extends Serializable {
             matcher.group(6),
             matcher.group(7),
             matcher.group(8),
-            matcher.group(9))
+            matcher.group(9),
+            matcher.group(10))
     }
 }
 
@@ -85,7 +106,7 @@ class AccessLogParser extends Serializable {
  */
 object AccessLogParser {
 
-    val nullObjectAccessLogRecord = AccessLogRecord("", "", "", "", "", "", "", "", "")
+    val nullObjectAccessLogRecord = AccessLogRecord("", "", "", "", "", "", "", "", "", "")
     
     /**
      * @param A String like "GET /the-uri-here HTTP/1.1"

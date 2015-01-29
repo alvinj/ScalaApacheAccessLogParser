@@ -20,6 +20,7 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
           val parser = new AccessLogParser
           val rec = parser.parseRecord(records(0))
           println("IP ADDRESS: " + rec.get.clientIpAddress)
+          println("BOTNET: " + rec.get.botnet)
           Then("parsing record(0) should not return None")
               assert(rec != None)
           And("the ip address should be correct")
@@ -40,6 +41,39 @@ class ApacheCombinedAccessLogRecordSpec extends FunSpec with BeforeAndAfter with
               assert(rec.get.referer == "http://www.google.co.in/search?hl=en&client=firefox-a&rlz=1R1GGGL_en___IN337&hs=F0W&q=reading+data+from+file+in+java&btnG=Search&meta=&aq=0&oq=reading+data+")          
           And("user agent")
               assert(rec.get.userAgent == "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11 GTB5")  
+      }
+  }
+
+  describe("Testing the access log record with botnet ...") {
+      it("the data fields should be correct") {
+          Given("the first sample log record")
+          records = SampleCombinedAccessLogRecords.botnetRecord
+          val parser = new AccessLogParser
+          val rec = parser.parseRecord(records(0))
+          println("IP ADDRESS: " + rec.get.clientIpAddress)
+          println("BOTNET: " + rec.get.botnet)
+          Then("parsing record(0) should not return None")
+              assert(rec != None)
+          And("botnet")
+              assert(rec.get.botnet == "Expiro")
+          And("the ip address should be correct")
+              assert(rec.get.clientIpAddress == "5.102.63.11")              
+          And("client identity")
+              assert(rec.get.rfc1413ClientIdentity == "-")          
+          And("remote user")
+              assert(rec.get.remoteUser == "-")          
+          And("date/time")
+              assert(rec.get.dateTime == "[31/Jan/2014:10:06:55 +0000]")          
+          And("request")
+              assert(rec.get.request == "GET /?f=x HTTP/1.1")          
+          And("status code should be 200")
+              assert(rec.get.httpStatusCode == "200")
+          And("bytes sent should be 3594")
+              assert(rec.get.bytesSent == "3594")
+          And("referer")
+              assert(rec.get.referer == "http://www.foo.it/foo.php")          
+          And("user agent")
+              assert(rec.get.userAgent == "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET4.0C; .NET4.0E; InfoPath.2)")  
       }
   }
   
